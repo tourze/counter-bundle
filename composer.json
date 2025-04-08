@@ -4,7 +4,8 @@
   "type": "symfony-bundle",
   "license": "MIT",
   "require": {
-    "php": ">=8.1",
+    "php": "^8.1",
+    "doctrine/common": "^3.5",
     "tourze/easy-admin-attribute": "0.0.*",
     "tourze/doctrine-indexed-bundle": "0.0.*",
     "tourze/doctrine-timestamp-bundle": "0.0.*",
