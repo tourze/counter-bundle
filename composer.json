@@ -2,6 +2,7 @@
   "name": "tourze/counter-bundle",
   "description": "Symfony Counter Bundle",
   "type": "symfony-bundle",
+  "license": "MIT",
   "require": {
     "php": ">=8.1",
     "tourze/easy-admin-attribute": "0.0.*",

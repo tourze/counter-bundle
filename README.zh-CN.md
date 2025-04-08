@@ -5,26 +5,26 @@
 [![Latest Version](https://img.shields.io/packagist/v/tourze/counter-bundle.svg?style=flat-square)](https://packagist.org/packages/tourze/counter-bundle)
 [![Total Downloads](https://img.shields.io/packagist/dt/tourze/counter-bundle.svg?style=flat-square)](https://packagist.org/packages/tourze/counter-bundle)
 
-A Symfony bundle that provides a complete entity counting system with features like automatic statistics, manual increment/decrement, and scheduled updates.
+一个基于 Symfony 的计数器管理系统，提供了一套完整的实体计数功能，支持自动统计、手动递增/递减、定时更新等特性。
 
-## Features
+## 功能特性
 
-- Automatic entity counting with performance optimization for large tables
-- Manual counter management with increment/decrement support
-- Scheduled counter updates via cron jobs
-- Context-aware counter tracking
-- Easy integration with Symfony's admin interface
-- Support for custom counter providers
+- 自动实体计数，针对大表进行性能优化
+- 支持手动管理计数器，包括递增和递减操作
+- 通过 cron 任务进行定时更新
+- 支持上下文感知的计数追踪
+- 易于集成到 Symfony 管理界面
+- 支持自定义计数器提供者
 
-## Installation
+## 安装
 
 ```bash
 composer require tourze/counter-bundle
 ```
 
-## Quick Start
+## 快速开始
 
-1. Register the bundle in `config/bundles.php`:
+1. 在 `config/bundles.php` 中注册 bundle：
 
 ```php
 return [
@@ -33,7 +33,7 @@ return [
 ];
 ```
 
-2. Create a custom counter provider:
+2. 创建自定义计数器提供者：
 
 ```php
 use CounterBundle\Provider\CounterProvider;
@@ -44,13 +44,13 @@ class CustomCounterProvider implements CounterProvider
 {
     public function getCounters(): iterable
     {
-        yield new Counter('users.total', 'Total Users');
-        yield new Counter('orders.total', 'Total Orders');
+        yield new Counter('users.total', '用户总数');
+        yield new Counter('orders.total', '订单总数');
     }
 }
 ```
 
-3. Use the counter in your service:
+3. 在服务中使用计数器：
 
 ```php
 use CounterBundle\Repository\CounterRepository;
@@ -71,50 +71,50 @@ class YourService
 }
 ```
 
-## Advanced Features
+## 高级特性
 
-### Automatic Entity Counting
+### 自动实体计数
 
-The bundle automatically tracks entity counts through Doctrine events:
+Bundle 通过 Doctrine 事件自动追踪实体计数：
 
 ```php
 use CounterBundle\Provider\EntityTotalCountProvider;
 
 class YourEntity
 {
-    // Your entity definition
+    // 你的实体定义
 }
 
-// The counter will be automatically updated on entity creation/deletion
+// 实体的创建/删除会自动更新计数器
 ```
 
-### Performance Optimization
+### 性能优化
 
-For large tables (>1M records), the bundle uses `information_schema` for count estimation:
+对于大表（>100万记录），Bundle 使用 `information_schema` 进行计数估算：
 
 ```php
-// Automatically switches to estimation for large tables
+// 自动切换到估算模式用于大表
 $counter = $counterRepository->findOneBy(['name' => 'large.table.total']);
 ```
 
-### Scheduled Updates
+### 定时更新
 
-Counter values are automatically updated via a cron job:
+计数器值通过 cron 任务自动更新：
 
 ```php
-// Runs every hour at minute 30
+// 每小时的第30分钟运行
 #[AsCronTask('30 * * * *')]
 #[AsCommand(name: 'counter:refresh-counter')]
 class RefreshCounterCommand extends LockableCommand
 {
-    // Command implementation
+    // 命令实现
 }
 ```
 
-## Contributing
+## 贡献
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+详情请查看 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-## License
+## 开源协议
 
-The MIT License (MIT). Please see [License File](LICENSE) for more information.
+MIT 开源协议。详情请查看 [License 文件](LICENSE)。
