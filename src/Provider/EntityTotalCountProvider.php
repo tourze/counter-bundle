@@ -95,7 +95,8 @@ FROM `information_schema`.`tables` WHERE TABLE_SCHEMA = '{$dbName}' ORDER BY tab
             }
 
             $counter->setCount($newValue);
-            $this->counterRepository->save($counter);
+            $this->entityManager->persist($counter);
+            $this->entityManager->flush();
             yield $counter;
         }
     }
@@ -135,7 +136,8 @@ FROM `information_schema`.`tables` WHERE TABLE_SCHEMA = '{$dbName}' ORDER BY tab
                 $counter = new Counter();
                 $counter->setName($name);
                 $counter->setCount(1);
-                $this->counterRepository->save($counter);
+                $this->entityManager->persist($counter);
+                $this->entityManager->flush();
             } else {
                 $this->counterRepository->createQueryBuilder('a')
                     ->update()
