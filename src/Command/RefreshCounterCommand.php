@@ -5,7 +5,7 @@ namespace CounterBundle\Command;
 use Carbon\Carbon;
 use CounterBundle\Entity\Counter;
 use CounterBundle\Provider\CounterProvider;
-use CounterBundle\Repository\CounterRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +20,7 @@ class RefreshCounterCommand extends LockableCommand
 {
     public function __construct(
         #[TaggedIterator('app.counter.provider')] private readonly iterable $providers,
-        private readonly CounterRepository $counterRepository,
+        private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
     }
@@ -37,7 +37,7 @@ class RefreshCounterCommand extends LockableCommand
                 }
                 $now = Carbon::now();
                 $output->writeln("更新计数器[{$counter->getName()}] -> {$counter->getCount()} at " . $now->toDateTimeString());
-                $this->counterRepository->detach($counter);
+                $this->entityManager->detach($counter);
             }
         }
 
