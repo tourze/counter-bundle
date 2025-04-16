@@ -22,7 +22,8 @@
     "tourze/doctrine-timestamp-bundle": "0.0.*",
     "tourze/symfony-lock-command-bundle": "0.0.*",
     "tourze/symfony-cron-job-bundle": "0.0.*",
-    "nesbot/carbon": "^2.72 || ^3"
+    "nesbot/carbon": "^2.72 || ^3",
+    "psr/log": "^3|^2|^1"
   },
   "require-dev": {
     "phpunit/phpunit": "^10.0",
