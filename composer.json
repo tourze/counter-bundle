@@ -21,7 +21,7 @@
     "tourze/doctrine-indexed-bundle": "0.0.*",
     "tourze/doctrine-timestamp-bundle": "0.0.*",
     "tourze/symfony-lock-command-bundle": "0.0.*",
-    "tourze/symfony-cron-job-bundle": "0.0.*",
+    "tourze/symfony-cron-job-bundle": "0.1.*",
     "nesbot/carbon": "^2.72 || ^3",
     "psr/log": "^3|^2|^1"
   },
@@ -36,7 +36,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "CounterBundle\\Tests\\": "src"
+      "CounterBundle\\Tests\\": "tests"
     }
   }
 }
