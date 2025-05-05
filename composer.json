@@ -17,7 +17,7 @@
     "symfony/framework-bundle": "^6.4",
     "symfony/yaml": "^6.4 || ^7.1",
     "symfony/service-contracts": "^3.5",
-    "tourze/easy-admin-attribute": "0.0.*",
+    "tourze/easy-admin-attribute": "0.1.*",
     "tourze/doctrine-indexed-bundle": "0.0.*",
     "tourze/doctrine-timestamp-bundle": "0.0.*",
     "tourze/symfony-lock-command-bundle": "0.0.*",
