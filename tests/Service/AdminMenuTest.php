@@ -3,7 +3,7 @@
 namespace CounterBundle\Tests\Service;
 
 use CounterBundle\Service\AdminMenu;
-use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Menu\MenuItemInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,9 +28,13 @@ class AdminMenuTest extends TestCase
         $this->assertIsArray($menuItems);
         $this->assertNotEmpty($menuItems);
 
-        // 验证所有项目都是 MenuItem 实例
-        foreach ($menuItems as $item) {
-            $this->assertInstanceOf(MenuItem::class, $item);
+        // 验证所有项目都是 MenuItemInterface 实例
+        foreach ($menuItems as $index => $item) {
+            $this->assertInstanceOf(
+                MenuItemInterface::class,
+                $item,
+                sprintf('Item %d is not a MenuItemInterface, it is %s', $index, get_class($item))
+            );
         }
 
         // 验证菜单项数量
@@ -46,9 +50,14 @@ class AdminMenuTest extends TestCase
 
         // 验证至少有两个菜单项
         $this->assertCount(2, $menuItems);
-        
-        // 验证菜单项都是 MenuItem 实例
-        $this->assertInstanceOf(MenuItem::class, $menuItems[0]);
-        $this->assertInstanceOf(MenuItem::class, $menuItems[1]);
+
+        // 验证菜单项都是 MenuItemInterface 实例
+        foreach ($menuItems as $index => $item) {
+            $this->assertInstanceOf(
+                MenuItemInterface::class,
+                $item,
+                sprintf('Item %d is not a MenuItemInterface, it is %s', $index, get_class($item))
+            );
+        }
     }
-} 
+}

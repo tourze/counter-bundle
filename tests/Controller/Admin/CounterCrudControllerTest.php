@@ -56,9 +56,9 @@ class CounterCrudControllerTest extends TestCase
         $fields = iterator_to_array($this->controller->configureFields(Crud::PAGE_INDEX));
 
         $this->assertNotEmpty($fields);
-        
+
         // 验证包含基本字段
-        $fieldNames = array_map(fn($field) => $field->getProperty(), $fields);
+        $fieldNames = array_map(fn($field) => $field->getAsDto()->getProperty(), $fields);
         $this->assertContains('id', $fieldNames);
         $this->assertContains('name', $fieldNames);
         $this->assertContains('count', $fieldNames);
@@ -109,4 +109,4 @@ class CounterCrudControllerTest extends TestCase
 
         $this->assertInstanceOf(\EasyCorp\Bundle\EasyAdminBundle\Config\Filters::class, $filters);
     }
-} 
+}
