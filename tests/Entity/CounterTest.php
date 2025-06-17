@@ -38,12 +38,12 @@ class CounterTest extends TestCase
         $this->assertEquals($context, $counter->getContext());
 
         // 测试设置和获取创建时间
-        $createTime = new \DateTime();
+        $createTime = new \DateTimeImmutable();
         $counter->setCreateTime($createTime);
         $this->assertSame($createTime, $counter->getCreateTime());
 
         // 测试设置和获取更新时间
-        $updateTime = new \DateTime();
+        $updateTime = new \DateTimeImmutable();
         $counter->setUpdateTime($updateTime);
         $this->assertSame($updateTime, $counter->getUpdateTime());
     }
