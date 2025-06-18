@@ -70,7 +70,7 @@ FROM `information_schema`.`tables` WHERE TABLE_SCHEMA = '{$dbName}' ORDER BY tab
             ]);
 
             $newValue = 0;
-            if (!$counter) {
+            if ($counter === null) {
                 $counter = new Counter();
                 $counter->setName($name);
 
@@ -132,7 +132,7 @@ FROM `information_schema`.`tables` WHERE TABLE_SCHEMA = '{$dbName}' ORDER BY tab
             $counter = $this->counterRepository->findOneBy([
                 'name' => $name,
             ]);
-            if (!$counter) {
+            if ($counter === null) {
                 $counter = new Counter();
                 $counter->setName($name);
                 $counter->setCount(1);
@@ -170,7 +170,7 @@ FROM `information_schema`.`tables` WHERE TABLE_SCHEMA = '{$dbName}' ORDER BY tab
             $counter = $this->counterRepository->findOneBy([
                 'name' => $name,
             ]);
-            if (!$counter) {
+            if ($counter === null) {
                 return;
             }
             $this->counterRepository->createQueryBuilder('a')

@@ -189,11 +189,13 @@ class EntityTotalCountProviderTest extends TestCase
     public function testGetCounters(): void
     {
         // 模拟数据库元数据
-        $metadata1 = new ClassMetadata('App\Entity\Entity1');
-        $metadata1->setTableName('table_entity1');
+        $metadata1 = $this->createMock(ClassMetadata::class);
+        $metadata1->method('getName')->willReturn('App\Entity\Entity1');
+        $metadata1->method('getTableName')->willReturn('table_entity1');
 
-        $metadata2 = new ClassMetadata('App\Entity\Entity2');
-        $metadata2->setTableName('table_entity2');
+        $metadata2 = $this->createMock(ClassMetadata::class);
+        $metadata2->method('getName')->willReturn('App\Entity\Entity2');
+        $metadata2->method('getTableName')->willReturn('table_entity2');
 
         // 设置元数据工厂的行为
         $this->classMetadataFactory

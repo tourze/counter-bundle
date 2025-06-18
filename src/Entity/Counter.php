@@ -22,7 +22,7 @@ class Counter
     private ?string $name = null;
 
     #[ORM\Column(options: ['comment' => '计数'])]
-    private ?int $count = 0;
+    private int $count = 0;
 
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => '上下文信息'])]
     private ?array $context = null;
@@ -44,7 +44,7 @@ class Counter
         return $this;
     }
 
-    public function getCount(): ?int
+    public function getCount(): int
     {
         return $this->count;
     }

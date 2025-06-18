@@ -27,8 +27,8 @@ class RefreshCounterCommand extends LockableCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var CounterProvider $provider */
         foreach ($this->providers as $provider) {
-            /** @var CounterProvider $provider */
             foreach ($provider->getCounters() as $counter) {
                 /** @var Counter|null $counter */
                 // 有一些计数器我们丢异步跑了，所以这里会拿不到

@@ -29,14 +29,6 @@ class CounterExtensionTest extends TestCase
         $this->assertInstanceOf(Extension::class, $this->extension);
     }
 
-    /**
-     * 测试加载方法存在且可调用
-     */
-    public function test_loadMethodExists(): void
-    {
-        $this->assertTrue(method_exists($this->extension, 'load'));
-        $this->assertTrue(is_callable([$this->extension, 'load']));
-    }
 
     /**
      * 测试加载空配置

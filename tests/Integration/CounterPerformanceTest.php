@@ -154,7 +154,7 @@ class CounterPerformanceTest extends KernelTestCase
             $entityClass = "TestEntity{$i}";
             $counterName = sprintf('%s::total', $entityClass);
             $counter = $this->counterRepository->findOneBy(['name' => $counterName]);
-            if ($counter) {
+            if ($counter !== null) {
                 $actualCounters++;
             }
         }
