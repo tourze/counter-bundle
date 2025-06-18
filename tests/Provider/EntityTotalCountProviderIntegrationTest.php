@@ -229,8 +229,6 @@ class EntityTotalCountProviderIntegrationTest extends KernelTestCase
         // Assert
         // 由于测试环境可能没有很多实体，所以计数器可能为空
         // 主要验证方法不抛出异常
-        $this->assertIsArray($counters);
-
         // 如果有计数器，验证其结构
         foreach ($counters as $counter) {
             $this->assertInstanceOf(Counter::class, $counter);

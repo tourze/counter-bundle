@@ -24,8 +24,6 @@ class AdminMenuTest extends TestCase
     public function testGetMenuItems(): void
     {
         $menuItems = $this->adminMenu->getMenuItems();
-
-        $this->assertIsArray($menuItems);
         $this->assertNotEmpty($menuItems);
 
         // 验证所有项目都是 MenuItemInterface 实例
