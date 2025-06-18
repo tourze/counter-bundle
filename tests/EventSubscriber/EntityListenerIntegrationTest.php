@@ -5,6 +5,7 @@ namespace CounterBundle\Tests\EventSubscriber;
 use CounterBundle\CounterBundle;
 use CounterBundle\Entity\Counter;
 use CounterBundle\EventSubscriber\EntityListener;
+use CounterBundle\Provider\EntityTotalCountProvider;
 use CounterBundle\Repository\CounterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -19,6 +20,7 @@ class EntityListenerIntegrationTest extends KernelTestCase
     private EntityManagerInterface $entityManager;
     private CounterRepository $counterRepository;
     private EntityListener $listener;
+    private EntityTotalCountProvider $countProvider;
 
     protected static function createKernel(array $options = []): KernelInterface
     {
@@ -35,6 +37,7 @@ class EntityListenerIntegrationTest extends KernelTestCase
         self::bootKernel();
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
         $this->counterRepository = static::getContainer()->get(CounterRepository::class);
+        $this->countProvider = static::getContainer()->get(EntityTotalCountProvider::class);
         $this->listener = static::getContainer()->get(EntityListener::class);
     }
 
