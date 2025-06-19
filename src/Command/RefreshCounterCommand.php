@@ -2,7 +2,7 @@
 
 namespace CounterBundle\Command;
 
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use CounterBundle\Entity\Counter;
 use CounterBundle\Provider\CounterProvider;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,7 +36,7 @@ class RefreshCounterCommand extends LockableCommand
                 if ($counter === null) {
                     continue;
                 }
-                $now = Carbon::now();
+                $now = CarbonImmutable::now();
                 $output->writeln("更新计数器[{$counter->getName()}] -> {$counter->getCount()} at " . $now->toDateTimeString());
                 $this->entityManager->detach($counter);
             }

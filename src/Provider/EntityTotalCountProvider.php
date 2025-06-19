@@ -2,7 +2,7 @@
 
 namespace CounterBundle\Provider;
 
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use CounterBundle\Entity\Counter;
 use CounterBundle\Repository\CounterRepository;
 use Doctrine\DBAL\Connection;
@@ -145,7 +145,7 @@ FROM `information_schema`.`tables` WHERE TABLE_SCHEMA = '{$dbName}' ORDER BY tab
                     ->set('a.updateTime', ':updateTime')
                     ->where('a.name = :name')
                     ->setParameter('name', $name)
-                    ->setParameter('updateTime', Carbon::now())
+                    ->setParameter('updateTime', CarbonImmutable::now())
                     ->getQuery()
                     ->execute();
             }
@@ -179,7 +179,7 @@ FROM `information_schema`.`tables` WHERE TABLE_SCHEMA = '{$dbName}' ORDER BY tab
                 ->set('a.updateTime', ':updateTime')
                 ->where('a.name = :name AND a.count > 1')
                 ->setParameter('name', $name)
-                ->setParameter('updateTime', Carbon::now())
+                ->setParameter('updateTime', CarbonImmutable::now())
                 ->getQuery()
                 ->execute();
         } catch (\Throwable $exception) {
