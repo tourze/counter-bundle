@@ -15,9 +15,10 @@ use Tourze\LockCommandBundle\Command\LockableCommand;
 use Tourze\Symfony\CronJob\Attribute\AsCronTask;
 
 #[AsCronTask('30 * * * *')]
-#[AsCommand(name: 'counter:refresh-counter', description: '定期更新计时器')]
+#[AsCommand(name: self::NAME, description: '定期更新计时器')]
 class RefreshCounterCommand extends LockableCommand
 {
+    public const NAME = 'counter:refresh-counter';
     public function __construct(
         #[TaggedIterator('app.counter.provider')] private readonly iterable $providers,
         private readonly EntityManagerInterface $entityManager,

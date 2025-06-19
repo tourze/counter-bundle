@@ -233,7 +233,6 @@ class EntityTotalCountProviderIntegrationTest extends KernelTestCase
         foreach ($counters as $counter) {
             $this->assertInstanceOf(Counter::class, $counter);
             $this->assertNotNull($counter->getName());
-            $this->assertIsInt($counter->getCount());
         }
 
         // 验证方法正常执行，不抛出异常

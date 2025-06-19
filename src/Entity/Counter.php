@@ -9,7 +9,7 @@ use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 
 #[ORM\Table(name: 'table_count', options: ['comment' => '计数器'])]
 #[ORM\Entity(repositoryClass: CounterRepository::class)]
-class Counter
+class Counter implements \Stringable
 {
     use TimestampableAware;
 
@@ -68,5 +68,8 @@ class Counter
         return $this;
     }
 
-
+    public function __toString(): string
+    {
+        return sprintf('%s (%d)', $this->name ?? 'Unknown', $this->count);
+    }
 }

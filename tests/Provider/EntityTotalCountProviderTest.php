@@ -17,6 +17,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
+// 定义测试用的实体类
+class TestEntity1 {}
+class TestEntity2 {}
+
 /**
  * EntityTotalCountProvider 的单元测试
  */
@@ -189,10 +193,10 @@ class EntityTotalCountProviderTest extends TestCase
     public function testGetCounters(): void
     {
         // 模拟数据库元数据
-        $metadata1 = new ClassMetadata('App\Entity\Entity1');
+        $metadata1 = new ClassMetadata(TestEntity1::class);
         $metadata1->setTableName('table_entity1');
 
-        $metadata2 = new ClassMetadata('App\Entity\Entity2');
+        $metadata2 = new ClassMetadata(TestEntity2::class);
         $metadata2->setTableName('table_entity2');
 
         // 设置元数据工厂的行为
@@ -229,11 +233,11 @@ class EntityTotalCountProviderTest extends TestCase
         $this->counterRepository
             ->method('findOneBy')
             ->willReturnCallback(function ($criteria) {
-                if ($criteria['name'] === 'App\Entity\Entity1::total') {
+                if ($criteria['name'] === TestEntity1::class . '::total') {
                     return null; // 首个实体没有计数器，需要创建
-                } else if ($criteria['name'] === 'App\Entity\Entity2::total') {
+                } else if ($criteria['name'] === TestEntity2::class . '::total') {
                     $counter = new Counter();
-                    $counter->setName('App\Entity\Entity2::total');
+                    $counter->setName(TestEntity2::class . '::total');
                     $counter->setCount(150);
                     return $counter;
                 }
@@ -246,10 +250,10 @@ class EntityTotalCountProviderTest extends TestCase
         // 验证结果
         $this->assertCount(2, $counters);
 
-        $this->assertEquals('App\Entity\Entity1::total', $counters[0]->getName());
+        $this->assertEquals(TestEntity1::class . '::total', $counters[0]->getName());
         $this->assertEquals(123, $counters[0]->getCount());
 
-        $this->assertEquals('App\Entity\Entity2::total', $counters[1]->getName());
+        $this->assertEquals(TestEntity2::class . '::total', $counters[1]->getName());
         $this->assertEquals(123, $counters[1]->getCount());
     }
 }
