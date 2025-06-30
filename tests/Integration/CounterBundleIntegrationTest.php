@@ -356,6 +356,7 @@ class CounterBundleIntegrationTest extends KernelTestCase
 
 /**
  * 测试用实体类
+ * @phpstan-ignore-next-line
  */
 class TestEntity
 {
@@ -369,6 +370,7 @@ class TestEntity
 
 /**
  * 另一个测试用实体类
+ * @phpstan-ignore-next-line
  */
 class AnotherTestEntity
 {

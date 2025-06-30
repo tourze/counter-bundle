@@ -5,6 +5,8 @@ namespace CounterBundle\Tests\Provider;
 use CounterBundle\Entity\Counter;
 use CounterBundle\Provider\EntityTotalCountProvider;
 use CounterBundle\Repository\CounterRepository;
+use CounterBundle\Tests\Fixtures\TestEntity1;
+use CounterBundle\Tests\Fixtures\TestEntity2;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,10 +18,6 @@ use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-
-// 定义测试用的实体类
-class TestEntity1 {}
-class TestEntity2 {}
 
 /**
  * EntityTotalCountProvider 的单元测试

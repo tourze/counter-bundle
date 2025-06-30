@@ -16,7 +16,7 @@ use Symfony\Contracts\Service\ResetInterface;
 
 #[AsDoctrineListener(event: Events::postPersist)]
 #[AsDoctrineListener(event: Events::postRemove)]
-#[AutoconfigureTag('as-coroutine')]
+#[AutoconfigureTag(name: 'as-coroutine')]
 class EntityListener implements ResetInterface
 {
     public function __construct(

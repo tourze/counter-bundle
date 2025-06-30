@@ -4,7 +4,7 @@ namespace CounterBundle\Provider;
 
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag('app.counter.provider')]
+#[AutoconfigureTag(name: 'app.counter.provider')]
 interface CounterProvider
 {
     /**
