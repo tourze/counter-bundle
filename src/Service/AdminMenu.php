@@ -2,23 +2,37 @@
 
 namespace CounterBundle\Service;
 
-use CounterBundle\Controller\Admin\CounterCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use CounterBundle\Entity\Counter;
+use Knp\Menu\ItemInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Tourze\EasyAdminMenuBundle\Service\LinkGeneratorInterface;
+use Tourze\EasyAdminMenuBundle\Service\MenuProviderInterface;
 
 /**
  * 计数器模块的管理菜单
  */
-class AdminMenu
+#[Autoconfigure(public: true)]
+readonly class AdminMenu implements MenuProviderInterface
 {
-    /**
-     * 获取计数器模块的菜单项
-     */
-    public function getMenuItems(): array
-    {
-        return [
-            MenuItem::section('计数器管理', 'fa fa-calculator')->setPermission('ROLE_ADMIN'),
-            MenuItem::linkToCrud('计数器列表', 'fa fa-list', CounterCrudController::class)
-                ->setPermission('ROLE_ADMIN'),
-        ];
+    public function __construct(
+        private LinkGeneratorInterface $linkGenerator,
+    ) {
     }
-} 
+
+    public function __invoke(ItemInterface $item): void
+    {
+        if (null === $item->getChild('数据统计')) {
+            $item->addChild('数据统计');
+        }
+
+        $statsMenu = $item->getChild('数据统计');
+        if (null === $statsMenu) {
+            return;
+        }
+
+        $statsMenu->addChild('计数器管理')
+            ->setUri($this->linkGenerator->getCurdListPage(Counter::class))
+            ->setAttribute('icon', 'fas fa-calculator')
+        ;
+    }
+}

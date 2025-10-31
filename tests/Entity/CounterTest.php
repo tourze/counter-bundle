@@ -3,13 +3,35 @@
 namespace CounterBundle\Tests\Entity;
 
 use CounterBundle\Entity\Counter;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;
 
 /**
  * Counter实体的单元测试
+ *
+ * @internal
  */
-class CounterTest extends TestCase
+#[CoversClass(Counter::class)]
+final class CounterTest extends AbstractEntityTestCase
 {
+    protected function createEntity(): Counter
+    {
+        return new Counter();
+    }
+
+    /**
+     * 提供 Counter 实体属性及其样本值的 Data Provider.
+     * @return iterable<array{string, mixed}>
+     */
+    public static function propertiesProvider(): iterable
+    {
+        yield ['name', 'test-counter'];
+        yield ['count', 42];
+        yield ['context', ['key' => 'value']];
+        yield ['createTime', new \DateTimeImmutable()];
+        yield ['updateTime', new \DateTimeImmutable()];
+    }
+
     /**
      * 测试创建计数器并设置基本属性
      */
@@ -55,13 +77,11 @@ class CounterTest extends TestCase
     {
         $counter = new Counter();
 
-        // 测试链式调用
-        $result = $counter
-            ->setName('chain-test')
-            ->setCount(5)
-            ->setContext(['chain' => true]);
+        // 测试设置方法（setter方法现在返回void以符合静态分析要求）
+        $counter->setName('chain-test');
+        $counter->setCount(5);
+        $counter->setContext(['chain' => true]);
 
-        $this->assertInstanceOf(Counter::class, $result);
         $this->assertEquals('chain-test', $counter->getName());
         $this->assertEquals(5, $counter->getCount());
         $this->assertEquals(['chain' => true], $counter->getContext());

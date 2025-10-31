@@ -2,57 +2,36 @@
 
 namespace CounterBundle\Tests\Repository;
 
-use CounterBundle\CounterBundle;
 use CounterBundle\Entity\Counter;
 use CounterBundle\Repository\CounterRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Tourze\IntegrationTestKernel\IntegrationTestKernel;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractRepositoryTestCase;
 
-class CounterRepositoryIntegrationTest extends KernelTestCase
+/**
+ * @internal
+ */
+#[CoversClass(CounterRepository::class)]
+#[RunTestsInSeparateProcesses]
+final class CounterRepositoryIntegrationTest extends AbstractRepositoryTestCase
 {
-    private EntityManagerInterface $entityManager;
     private CounterRepository $repository;
 
-    protected static function createKernel(array $options = []): KernelInterface
+    protected function onSetUp(): void
     {
-        $env = $options['environment'] ?? $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'test';
-        $debug = $options['debug'] ?? $_ENV['APP_DEBUG'] ?? $_SERVER['APP_DEBUG'] ?? true;
-
-        return new IntegrationTestKernel($env, $debug, [
-            CounterBundle::class => ['all' => true],
-        ]);
+        /** @var CounterRepository $repository */
+        $repository = self::getContainer()->get(CounterRepository::class);
+        $this->repository = $repository;
     }
 
-    protected function setUp(): void
-    {
-        self::bootKernel();
-        $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $this->repository = static::getContainer()->get(CounterRepository::class);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->cleanDatabase();
-        self::ensureKernelShutdown();
-        parent::tearDown();
-    }
-
-    private function cleanDatabase(): void
-    {
-        $connection = $this->entityManager->getConnection();
-        $connection->executeStatement('DELETE FROM table_count');
-    }
-
-    public function test_save_withValidEntity_persistsToDatabase(): void
+    public function testSaveWithValidEntityPersistsToDatabase(): void
     {
         // Arrange
         $counter = $this->createTestCounter('test.counter');
 
         // Act
-        $this->entityManager->persist($counter);
-        $this->entityManager->flush();
+        self::getEntityManager()->persist($counter);
+        self::getEntityManager()->flush();
 
         // Assert
         $this->assertNotNull($counter->getId());
@@ -62,12 +41,12 @@ class CounterRepositoryIntegrationTest extends KernelTestCase
         $this->assertEquals(10, $savedCounter->getCount());
     }
 
-    public function test_findOneBy_withValidName_returnsCounter(): void
+    public function testFindOneByWithValidNameReturnsCounter(): void
     {
         // Arrange
         $counter = $this->createTestCounter('findable.counter');
-        $this->entityManager->persist($counter);
-        $this->entityManager->flush();
+        self::getEntityManager()->persist($counter);
+        self::getEntityManager()->flush();
 
         // Act
         $result = $this->repository->findOneBy(['name' => 'findable.counter']);
@@ -78,7 +57,7 @@ class CounterRepositoryIntegrationTest extends KernelTestCase
         $this->assertEquals(10, $result->getCount());
     }
 
-    public function test_findOneBy_withNonExistentName_returnsNull(): void
+    public function testFindOneByWithNonExistentNameReturnsNull(): void
     {
         // Act
         $result = $this->repository->findOneBy(['name' => 'nonexistent.counter']);
@@ -87,62 +66,65 @@ class CounterRepositoryIntegrationTest extends KernelTestCase
         $this->assertNull($result);
     }
 
-    public function test_findAll_withMultipleCounters_returnsAllCounters(): void
+    public function testFindAllWithMultipleCountersReturnsAllCounters(): void
     {
         // Arrange
         $counter1 = $this->createTestCounter('counter.one');
         $counter2 = $this->createTestCounter('counter.two');
-        $this->entityManager->persist($counter1);
-        $this->entityManager->persist($counter2);
-        $this->entityManager->flush();
+        self::getEntityManager()->persist($counter1);
+        self::getEntityManager()->persist($counter2);
+        self::getEntityManager()->flush();
 
         // Act
         $result = $this->repository->findAll();
 
         // Assert
-        $this->assertCount(2, $result);
-        $names = array_map(fn($c) => $c->getName(), $result);
+        $this->assertGreaterThanOrEqual(2, count($result));
+        $names = array_map(fn ($c) => $c->getName(), $result);
         $this->assertContains('counter.one', $names);
         $this->assertContains('counter.two', $names);
     }
 
-    public function test_count_withEmptyDatabase_returnsZero(): void
+    public function testCountWithEmptyResultsReturnsZero(): void
     {
-        // Act
-        $result = $this->repository->count([]);
+        // Act - 使用一个不存在的条件来测试 count 方法
+        $result = $this->repository->count(['name' => 'non.existent.counter.name.that.will.never.exist']);
 
         // Assert
         $this->assertEquals(0, $result);
     }
 
-    public function test_count_withMultipleCounters_returnsCorrectCount(): void
+    public function testCountWithMultipleCountersReturnsCorrectCount(): void
     {
         // Arrange
+        $initialCount = $this->repository->count([]);
         $counter1 = $this->createTestCounter('count.one');
         $counter2 = $this->createTestCounter('count.two');
         $counter3 = $this->createTestCounter('count.three');
-        $this->entityManager->persist($counter1);
-        $this->entityManager->persist($counter2);
-        $this->entityManager->persist($counter3);
-        $this->entityManager->flush();
+        self::getEntityManager()->persist($counter1);
+        self::getEntityManager()->persist($counter2);
+        self::getEntityManager()->persist($counter3);
+        self::getEntityManager()->flush();
 
         // Act
         $result = $this->repository->count([]);
 
         // Assert
-        $this->assertEquals(3, $result);
+        $this->assertEquals($initialCount + 3, $result);
     }
 
-    public function test_findBy_withCriteria_returnsMatchingCounters(): void
+    public function testFindByWithCriteriaReturnsMatchingCounters(): void
     {
-        // Arrange
+        // Arrange - Clear existing data first
+        self::getEntityManager()->createQuery('DELETE FROM CounterBundle\Entity\Counter')->execute();
+
         $counter1 = $this->createTestCounter('find.counter', 100);
         $counter2 = $this->createTestCounter('another.counter', 100);
         $counter3 = $this->createTestCounter('different.counter', 200);
-        $this->entityManager->persist($counter1);
-        $this->entityManager->persist($counter2);
-        $this->entityManager->persist($counter3);
-        $this->entityManager->flush();
+        self::getEntityManager()->persist($counter1);
+        self::getEntityManager()->persist($counter2);
+        self::getEntityManager()->persist($counter3);
+        self::getEntityManager()->flush();
 
         // Act
         $result = $this->repository->findBy(['count' => 100]);
@@ -154,38 +136,39 @@ class CounterRepositoryIntegrationTest extends KernelTestCase
         }
     }
 
-    public function test_remove_withValidEntity_deletesFromDatabase(): void
+    public function testRemoveWithValidEntityDeletesFromDatabase(): void
     {
         // Arrange
         $counter = $this->createTestCounter('removable.counter');
-        $this->entityManager->persist($counter);
-        $this->entityManager->flush();
+        self::getEntityManager()->persist($counter);
+        self::getEntityManager()->flush();
         $counterId = $counter->getId();
 
         // Act
-        $this->entityManager->remove($counter);
-        $this->entityManager->flush();
+        self::getEntityManager()->remove($counter);
+        self::getEntityManager()->flush();
 
         // Assert
         $deletedCounter = $this->repository->find($counterId);
         $this->assertNull($deletedCounter);
     }
 
-    public function test_update_withModifiedEntity_persistsChanges(): void
+    public function testUpdateWithModifiedEntityPersistsChanges(): void
     {
         // Arrange
         $counter = $this->createTestCounter('updatable.counter');
-        $this->entityManager->persist($counter);
-        $this->entityManager->flush();
+        self::getEntityManager()->persist($counter);
+        self::getEntityManager()->flush();
 
         // Act
         $counter->setCount(999);
         $counter->setContext(['updated' => true]);
-        $this->entityManager->flush();
+        self::getEntityManager()->flush();
 
         // Assert
-        $this->entityManager->clear();
+        self::getEntityManager()->clear();
         $updatedCounter = $this->repository->find($counter->getId());
+        $this->assertNotNull($updatedCounter);
         $this->assertEquals(999, $updatedCounter->getCount());
         $this->assertEquals(['updated' => true], $updatedCounter->getContext());
     }
@@ -196,6 +179,22 @@ class CounterRepositoryIntegrationTest extends KernelTestCase
         $counter->setName($name);
         $counter->setCount($count);
         $counter->setContext(['test' => true]);
+
+        return $counter;
+    }
+
+    protected function getRepository(): CounterRepository
+    {
+        return self::getService(CounterRepository::class);
+    }
+
+    protected function createNewEntity(): object
+    {
+        $counter = new Counter();
+        $counter->setName('test_counter_' . uniqid());
+        $counter->setCount(10);
+        $counter->setContext(['test' => true]);
+
         return $counter;
     }
 }

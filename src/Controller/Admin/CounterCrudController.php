@@ -18,8 +18,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
+/**
+ * @extends AbstractCrudController<Counter>
+ */
 #[AdminCrud(routePath: '/counter/counter', routeName: 'counter_counter')]
-class CounterCrudController extends AbstractCrudController
+final class CounterCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
@@ -37,41 +40,46 @@ class CounterCrudController extends AbstractCrudController
             ->setPageTitle('detail', '计数器详情')
             ->setHelp('index', '计数器用于统计各种实体的数量，支持自动更新和手动调整')
             ->setDefaultSort(['id' => 'DESC'])
-            ->setSearchFields(['id', 'name']);
+            ->setSearchFields(['id', 'name'])
+        ;
     }
 
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id', 'ID')
             ->setMaxLength(9999)
-            ->hideOnForm();
+            ->hideOnForm()
+        ;
 
         yield TextField::new('name', '计数器名称')
-            ->setHelp('计数器的唯一标识符，格式通常为：实体类名::total');
+            ->setHelp('计数器的唯一标识符，格式通常为：实体类名::total')
+        ;
 
         yield IntegerField::new('count', '计数值')
-            ->setHelp('当前计数值，可手动调整');
+            ->setHelp('当前计数值，可手动调整')
+        ;
 
         yield ArrayField::new('context', '上下文信息')
             ->hideOnIndex()
-            ->setHelp('存储与计数器相关的额外信息');
+            ->setHelp('存储与计数器相关的额外信息')
+        ;
 
         yield DateTimeField::new('createTime', '创建时间')
             ->hideOnForm()
-            ->setFormat('yyyy-MM-dd HH:mm:ss');
+            ->setFormat('yyyy-MM-dd HH:mm:ss')
+        ;
 
         yield DateTimeField::new('updateTime', '更新时间')
             ->hideOnForm()
-            ->setFormat('yyyy-MM-dd HH:mm:ss');
+            ->setFormat('yyyy-MM-dd HH:mm:ss')
+        ;
     }
 
     public function configureActions(Actions $actions): Actions
     {
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->add(Crud::PAGE_INDEX, Action::EDIT)
-            ->add(Crud::PAGE_INDEX, Action::DELETE)
-            ->reorder(Crud::PAGE_INDEX, [Action::DETAIL, Action::EDIT, Action::DELETE]);
+        ;
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -80,6 +88,7 @@ class CounterCrudController extends AbstractCrudController
             ->add(TextFilter::new('name', '计数器名称'))
             ->add(NumericFilter::new('count', '计数值'))
             ->add(DateTimeFilter::new('createTime', '创建时间'))
-            ->add(DateTimeFilter::new('updateTime', '更新时间'));
+            ->add(DateTimeFilter::new('updateTime', '更新时间'))
+        ;
     }
 }

@@ -10,7 +10,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Tourze\LockCommandBundle\Command\LockableCommand;
 use Tourze\Symfony\CronJob\Attribute\AsCronTask;
 
@@ -19,8 +19,12 @@ use Tourze\Symfony\CronJob\Attribute\AsCronTask;
 class RefreshCounterCommand extends LockableCommand
 {
     public const NAME = 'counter:refresh-counter';
+
+    /**
+     * @param iterable<CounterProvider> $providers
+     */
     public function __construct(
-        #[TaggedIterator(tag: 'app.counter.provider')] private readonly iterable $providers,
+        #[AutowireIterator(tag: 'app.counter.provider')] private readonly iterable $providers,
         private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
@@ -31,9 +35,9 @@ class RefreshCounterCommand extends LockableCommand
         /** @var CounterProvider $provider */
         foreach ($this->providers as $provider) {
             foreach ($provider->getCounters() as $counter) {
-                /** @var Counter|null $counter */
+                /** @var Counter $counter */
                 // 有一些计数器我们丢异步跑了，所以这里会拿不到
-                if ($counter === null) {
+                if (null === $counter) {
                     continue;
                 }
                 $now = CarbonImmutable::now();

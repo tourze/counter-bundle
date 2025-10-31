@@ -5,17 +5,34 @@ namespace CounterBundle\Repository;
 use CounterBundle\Entity\Counter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Tourze\PHPUnitSymfonyKernelTest\Attribute\AsRepository;
 
 /**
- * @method Counter|null find($id, $lockMode = null, $lockVersion = null)
- * @method Counter|null findOneBy(array $criteria, array $orderBy = null)
- * @method Counter[] findAll()
- * @method Counter[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Counter>
  */
+#[AsRepository(entityClass: Counter::class)]
 class CounterRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Counter::class);
+    }
+
+    public function save(Counter $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Counter $entity, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 }

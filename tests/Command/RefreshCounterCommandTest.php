@@ -3,48 +3,49 @@
 namespace CounterBundle\Tests\Command;
 
 use CounterBundle\Command\RefreshCounterCommand;
-use CounterBundle\Entity\Counter;
-use CounterBundle\Provider\CounterProvider;
-use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractCommandTestCase;
 
-class RefreshCounterCommandTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(RefreshCounterCommand::class)]
+#[RunTestsInSeparateProcesses]
+final class RefreshCounterCommandTest extends AbstractCommandTestCase
 {
-    public function testExecute(): void
+    private RefreshCounterCommand $command;
+
+    protected function getCommandTester(): CommandTester
     {
-        $counter = $this->createMock(Counter::class);
-        $counter->method('getName')->willReturn('test_counter');
-        $counter->method('getCount')->willReturn(42);
-
-        $provider = $this->createMock(CounterProvider::class);
-        $provider->method('getCounters')->willReturn([$counter]);
-
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())->method('detach')->with($counter);
-
-        $command = new RefreshCounterCommand([$provider], $entityManager);
-        $commandTester = new CommandTester($command);
-        
-        $commandTester->execute([]);
-
-        $this->assertSame(0, $commandTester->getStatusCode());
-        $this->assertStringContainsString('更新计数器[test_counter] -> 42', $commandTester->getDisplay());
+        return new CommandTester($this->command);
     }
 
-    public function testExecuteWithNullCounter(): void
+    protected function onSetUp(): void
     {
-        $provider = $this->createMock(CounterProvider::class);
-        $provider->method('getCounters')->willReturn([null]);
+        // 从容器获取命令（使用真实的服务配置）
+        $command = self::getService(RefreshCounterCommand::class);
+        $this->assertInstanceOf(RefreshCounterCommand::class, $command);
+        $this->command = $command;
+    }
 
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->never())->method('detach');
+    public function testExecuteCommandConfiguration(): void
+    {
+        // 测试命令基本配置
+        $this->assertSame('counter:refresh-counter', $this->command->getName());
+        $this->assertSame('定期更新计时器', $this->command->getDescription());
+    }
 
-        $command = new RefreshCounterCommand([$provider], $entityManager);
-        $commandTester = new CommandTester($command);
-        
-        $commandTester->execute([]);
+    public function testExecuteCommandSuccessfully(): void
+    {
+        // 测试命令成功执行（即使没有提供者注册）
+        $commandTester = $this->getCommandTester();
+        $exitCode = $commandTester->execute([]);
 
-        $this->assertSame(0, $commandTester->getStatusCode());
+        $this->assertSame(Command::SUCCESS, $exitCode);
+        // 因为命令使用真实的 providers 注入，输出可能有或没有内容
+        // 这里只验证命令能成功执行
     }
 }

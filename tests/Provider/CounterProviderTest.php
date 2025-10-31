@@ -4,13 +4,24 @@ namespace CounterBundle\Tests\Provider;
 
 use CounterBundle\Entity\Counter;
 use CounterBundle\Provider\CounterProvider;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 
 /**
  * 测试 CounterProvider 接口的实现
+ *
+ * @internal
  */
-class CounterProviderTest extends TestCase
+#[CoversClass(CounterProvider::class)]
+#[RunTestsInSeparateProcesses]
+final class CounterProviderTest extends AbstractIntegrationTestCase
 {
+    protected function onSetUp(): void
+    {
+        // 这个测试不需要特殊的设置
+    }
+
     /**
      * 测试简单的 CounterProvider 实现
      */
@@ -18,6 +29,9 @@ class CounterProviderTest extends TestCase
     {
         // 创建匿名实现类
         $provider = new class implements CounterProvider {
+            /**
+             * @return iterable<Counter>
+             */
             public function getCounters(): iterable
             {
                 $counter1 = new Counter();
@@ -49,9 +63,12 @@ class CounterProviderTest extends TestCase
     {
         // 创建使用生成器的匿名实现类
         $provider = new class implements CounterProvider {
+            /**
+             * @return iterable<Counter>
+             */
             public function getCounters(): iterable
             {
-                for ($i = 1; $i <= 3; $i++) {
+                for ($i = 1; $i <= 3; ++$i) {
                     $counter = new Counter();
                     $counter->setName('counter-' . $i);
                     $counter->setCount($i * 10);
