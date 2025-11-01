@@ -144,8 +144,7 @@ final class CounterCrudControllerTest extends AbstractEasyAdminControllerTestCas
     public function testCounterActionLinksWorkCorrectly(): void
     {
         // 访问 INDEX 页面（使用正确的客户端创建方法）
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // 创建测试数据
         $this->createTestData();
