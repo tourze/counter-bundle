@@ -21,15 +21,10 @@ final class CounterCrudControllerTest extends AbstractEasyAdminControllerTestCas
 {
     public function testCounterListPageAccessWithAdminUser(): void
     {
-        $client = self::createClientWithDatabase();
-        $admin = $this->createAdminUser('admin@test.com', 'password123');
-        $this->loginAsAdmin($client, 'admin@test.com', 'password123');
+        $client = self::createAuthenticatedClient();
 
         // 确保有测试数据
         $this->createTestData();
-
-        // 手动设置静态客户端变量以支持断言
-        self::getClient($client);
 
         $crawler = $client->request('GET', '/admin/counter/counter');
         $this->assertResponseIsSuccessful();
@@ -38,15 +33,10 @@ final class CounterCrudControllerTest extends AbstractEasyAdminControllerTestCas
 
     public function testCounterSearchFunctionality(): void
     {
-        $client = self::createClientWithDatabase();
-        $admin = $this->createAdminUser('admin@test.com', 'password123');
-        $this->loginAsAdmin($client, 'admin@test.com', 'password123');
+        $client = self::createAuthenticatedClient();
 
         // 确保有测试数据
         $this->createTestData();
-
-        // 手动设置静态客户端变量以支持断言
-        self::getClient($client);
 
         // 测试搜索页面可以访问
         $crawler = $client->request('GET', '/admin/counter/counter');
@@ -63,12 +53,7 @@ final class CounterCrudControllerTest extends AbstractEasyAdminControllerTestCas
 
     public function testCounterCreateFormAccess(): void
     {
-        $client = self::createClientWithDatabase();
-        $admin = $this->createAdminUser('admin@test.com', 'password123');
-        $this->loginAsAdmin($client, 'admin@test.com', 'password123');
-
-        // 手动设置静态客户端变量以支持断言
-        self::getClient($client);
+        $client = self::createAuthenticatedClient();
 
         $crawler = $client->request('GET', '/admin/counter/counter/new');
         $this->assertResponseIsSuccessful();
@@ -79,15 +64,10 @@ final class CounterCrudControllerTest extends AbstractEasyAdminControllerTestCas
 
     public function testCounterEntityFqcnConfiguration(): void
     {
-        $client = self::createClientWithDatabase();
-        $admin = $this->createAdminUser('admin@test.com', 'password123');
-        $this->loginAsAdmin($client, 'admin@test.com', 'password123');
+        $client = self::createAuthenticatedClient();
 
         // 确保有测试数据
         $this->createTestData();
-
-        // 手动设置静态客户端变量以支持断言
-        self::getClient($client);
 
         // 通过访问页面验证控制器正确配置了实体类
         $crawler = $client->request('GET', '/admin/counter/counter');
